@@ -63,7 +63,7 @@ def count_words_(dataframe):
     """Word count"""
     
     dataframe = dataframe.copy()
-    dataframe["text"] = dataframe["text"].str.split()#truco: se parte por palabras, cada fila de la tabla en una lista de strings
+    dataframe["text"] = dataframe["text"].str.split()
     dataframe = dataframe.explode("text")
     dataframe = dataframe["text"].value_counts()
     
@@ -73,7 +73,7 @@ def count_words_(dataframe):
 
 def save_output(dataframe, output_filename):
     """Save output to a file."""
-    dataframe.to_csv(output_filename, sep=";", index=True, header=False)
+    dataframe.to_csv(output_filename, sep="\t", index=True, header=False)
 
 
 #
