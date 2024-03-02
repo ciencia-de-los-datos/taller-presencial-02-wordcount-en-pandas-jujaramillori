@@ -47,25 +47,28 @@ def clean_text(dataframe):
 
 # Convertir de un string a una lista de strings, luego expande la lista 
 
+def count_words_(dataframe):
+    """Word count"""
+    dataframe=dataframe.copy()
+    dataframe["text"] = dataframe["text"].str.split() #se crea una lista en cada fila con separacion por ,
+    dataframe = dataframe.explode("text") 
+    dataframe["count"] = 1
+    dataframe = dataframe.groupby("text").agg({"count": "sum"}) #sumar la columna count
+    return dataframe
+
 def count_words(dataframe):
     """Word count"""
 
     dataframe=dataframe.copy()
     dataframe["text"]=dataframe["text"].str.split()
     dataframe =dataframe.explode("text")
-    dataframe = dataframe["text"].value_counts().reset_index()
+    dataframe = dataframe["text"].value_counts()
 
     return dataframe
-
-
-
 
 def save_output(dataframe, output_filename):
     """Save output to a file."""
     dataframe.to_csv(output_filename, sep=";", index=True)
-
-
-
 
 #
 # Escriba la función job, la cual orquesta las funciones anteriores.
@@ -75,11 +78,11 @@ def run(input_directory, output_filename):
     df=load_input("input")
     df=clean_text(df)
     df=count_words(df)
-    save_output(df,"output.txt")
+    save_output(df, output_filename)
 
 
 if __name__ == "__main__":
     run(
         "input",
         "output.txt",
-    )
+    ) return dataframe 
