@@ -48,22 +48,31 @@ def clean_text(dataframe):
 
 def count_words(dataframe):
     """Word count"""
-
-    dataframe=dataframe.copy()
-    dataframe["text"]=dataframe["text"].str.split()
-    dataframe =dataframe.explode("text")
-    dataframe = dataframe["text"].value_counts().reset_index()
+    
+    dataframe = dataframe.copy()
+    dataframe["text"] = dataframe["text"].str.split()#truco: se parte por palabras, cada fila de la tabla en una lista de strings
+    dataframe = dataframe.explode("text")
+    dataframe["count"] = 1
+    dataframe = dataframe.groupby("text").agg({"count": "sum"})
+    return dataframe 
 
     return dataframe
 
+def count_words_(dataframe):
+    """Word count"""
+    
+    dataframe = dataframe.copy()
+    dataframe["text"] = dataframe["text"].str.split()#truco: se parte por palabras, cada fila de la tabla en una lista de strings
+    dataframe = dataframe.explode("text")
+    dataframe = dataframe["text"].value_counts()
+    
+    return dataframe
 
 
 
 def save_output(dataframe, output_filename):
     """Save output to a file."""
-    dataframe.to_csv(output_filename, sep=";", index=True)
-
-
+    dataframe.to_csv(output_filename, sep=";", index=True, header=False)
 
 
 #
@@ -73,8 +82,8 @@ def run(input_directory, output_filename):
     """Call all functions."""
     df=load_input("input")
     df=clean_text(df)
-    df=count_words(df)
-    save_output(df,"output.txt")
+    df=count_words_(df)
+    save_output(df, output_filename)
 
 
 if __name__ == "__main__":
